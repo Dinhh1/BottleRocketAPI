@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BottleRocket.Models
 {
+    [Table("ScheduledPickups")]
     public class ScheduledPickup
     {
         [Key]
