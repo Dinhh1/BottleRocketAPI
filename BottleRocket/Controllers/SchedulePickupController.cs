@@ -14,6 +14,7 @@ using BottleRocket.BusinessLogic;
 
 namespace BottleRocket.Controllers
 {
+    [Authorize]
     public class SchedulePickupController : ApiController
     {
 
@@ -22,7 +23,7 @@ namespace BottleRocket.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Ok(StatusResult<ScheduledPickup>.Error("ModelState is Invalid"));
+                return Ok(StatusResult<ScheduledPickup>.Error("Model is Invalid"));
             }
 
             var response = await SchedulePickupManager.InsertScheduledPickupAsync(model.UserId);
