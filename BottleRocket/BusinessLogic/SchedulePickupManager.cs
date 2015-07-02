@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BottleRocket.BusinessLogic
 {
-    public class PickupManager
+    public class SchedulePickupManager
     {
         /// <summary>
         /// Search for a all scheduled pickups for a given user

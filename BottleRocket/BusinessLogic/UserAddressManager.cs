@@ -85,7 +85,7 @@ namespace BottleRocket.BusinessLogic
             var query = UserAddressesDbContext.Create().UserAddresses.Find(id);
             if (query == null)
             {
-                return StatusResult<UserAddress>.Error("No Result(s) found");
+                return StatusResult<UserAddress>.Error("No Results found");
             }
             else
             {
@@ -103,7 +103,7 @@ namespace BottleRocket.BusinessLogic
             var query = await UserAddressesDbContext.Create().UserAddresses.FindAsync(id);
             if (query == null)
             {
-                return StatusResult<UserAddress>.Error("No Result(s) found");
+                return StatusResult<UserAddress>.Error("No Results found");
             }
             else
             {
@@ -128,7 +128,7 @@ namespace BottleRocket.BusinessLogic
                              select addy).SingleOrDefault();
                 if (address == null)
                 {
-                    return StatusResult<UserAddress>.Error("No Result(s) found");
+                    return StatusResult<UserAddress>.Error("No Results found");
                 }
             }
             catch (Exception ex)
