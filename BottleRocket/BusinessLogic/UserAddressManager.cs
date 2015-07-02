@@ -10,7 +10,7 @@ namespace BottleRocket.BusinessLogic
     /// <summary>
     /// This class is used to abstract away all DB operations. For the most part, this class wraps calls and returns the appropriate status
     /// </summary>
-    public class UserAddressUtilities
+    public class UserAddressManager
     {
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userId">The user's id</param>
         /// <returns>StatusResult</returns>
-        public static async Task<StatusResult> InsertUserAddressAsync(RegisterBindingModel model, string userId)
+        public static async Task<StatusResult<UserAddress>> InsertUserAddressAsync(RegisterBindingModel model, string userId)
         {
             return await InsertUserAddressAsync(UserAddress.CreateAddress(model, userId));
         }
@@ -29,7 +29,7 @@ namespace BottleRocket.BusinessLogic
         /// </summary>
         /// <param name="model">The UserAddress with appropriate data</param>
         /// <returns>StatusResult</returns>
-        public static async Task<StatusResult> InsertUserAddressAsync(UserAddress a)
+        public static async Task<StatusResult<UserAddress>> InsertUserAddressAsync(UserAddress a)
         {
             try
             {
@@ -39,9 +39,9 @@ namespace BottleRocket.BusinessLogic
             }
             catch (Exception ex)
             {
-                return StatusResult.Error(ex.Message);
+                return StatusResult<UserAddress>.Error(ex.Message);
             }
-            return StatusResult.Success();
+            return StatusResult<UserAddress>.Success();
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userId">The user's id</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult InsertUserAddress(RegisterBindingModel model, string userId)
+        public static StatusResult<UserAddress> InsertUserAddress(RegisterBindingModel model, string userId)
         {
             return InsertUserAddress(UserAddress.CreateAddress(model, userId));
         }
@@ -60,7 +60,7 @@ namespace BottleRocket.BusinessLogic
         /// </summary>
         /// <param name="model">The UserAddress with appropriate data</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult InsertUserAddress(UserAddress a)
+        public static StatusResult<UserAddress> InsertUserAddress(UserAddress a)
         {
             try
             {
@@ -70,9 +70,9 @@ namespace BottleRocket.BusinessLogic
             }
             catch (Exception ex)
             {
-                return StatusResult.Error(ex.Message);
+                return StatusResult<UserAddress>.Error(ex.Message);
             }
-            return StatusResult.Success();
+            return StatusResult<UserAddress>.Success();
         }
 
         /// <summary>
@@ -80,9 +80,17 @@ namespace BottleRocket.BusinessLogic
         /// </summary>
         /// <param name="id">UserAddress object's id</param>
         /// <returns>UserAddress if found, NULL otherwise</returns>
-        public static UserAddress GetUserAddress(int id)
+        public static StatusResult<UserAddress> GetUserAddress(int id)
         {
-            return UserAddressesDbContext.Create().UserAddresses.Find(id);
+            var query = UserAddressesDbContext.Create().UserAddresses.Find(id);
+            if (query == null)
+            {
+                return StatusResult<UserAddress>.Error("No Result(s) found");
+            }
+            else
+            {
+                return StatusResult<UserAddress>.Success(query);
+            }
         }
 
         /// <summary>
@@ -90,9 +98,17 @@ namespace BottleRocket.BusinessLogic
         /// </summary>
         /// <param name="id">UserAddress object's id</param>
         /// <returns>UserAddress if found, NULL otherwise</returns>
-        public static async Task<UserAddress> GetUserAddressAsync(int id)
+        public static async Task<StatusResult<UserAddress>> GetUserAddressAsync(int id)
         {
-            return await UserAddressesDbContext.Create().UserAddresses.FindAsync(id);
+            var query = await UserAddressesDbContext.Create().UserAddresses.FindAsync(id);
+            if (query == null)
+            {
+                return StatusResult<UserAddress>.Error("No Result(s) found");
+            }
+            else
+            {
+                return StatusResult<UserAddress>.Success(query);
+            }
         }
 
         /// <summary>
@@ -100,7 +116,7 @@ namespace BottleRocket.BusinessLogic
         /// </summary>
         /// <param name="userId">The address of the provided userId</param>
         /// <returns>UserAddress if found, NULL otherwise</returns>
-        public static UserAddress GetUserAddressByUserId(string userId)
+        public static StatusResult<UserAddress> GetUserAddressByUserId(string userId)
         {
             UserAddress address = null;
             try
@@ -110,14 +126,16 @@ namespace BottleRocket.BusinessLogic
                 address = (from addy in db.UserAddresses
                              where addy.UserId == userId
                              select addy).SingleOrDefault();
+                if (address == null)
+                {
+                    return StatusResult<UserAddress>.Error("No Result(s) found");
+                }
             }
             catch (Exception ex)
             {
-                // silent exception
-                return null;
+                return StatusResult<UserAddress>.Error(ex.Message);
             }
-
-            return address;
+            return StatusResult<UserAddress>.Success(address);
         }
 
     }

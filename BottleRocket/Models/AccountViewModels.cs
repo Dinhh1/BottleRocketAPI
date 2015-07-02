@@ -32,6 +32,8 @@ namespace BottleRocket.Models
         public bool HasRegistered { get; set; }
 
         public string LoginProvider { get; set; }
+
+        public UserAddress Address { get; set; }
     }
 
     public class UserLoginInfoViewModel

@@ -62,11 +62,12 @@ namespace BottleRocket.Controllers
         public UserInfoViewModel GetUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-
+            var ua = UserAddressManager.GetUserAddressByUserId(User.Identity.GetUserId());
             return new UserInfoViewModel
             {
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
+                Address = ua.Result,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             };
         }
@@ -330,9 +331,9 @@ namespace BottleRocket.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Ok(StatusResult.Error("There is an Error in the Model"));
+                return Ok(StatusResult<RegisterBindingModel>.Error("There is an Error in the Model"));
             }
-            var result = await UserBusinessUtilities.RegisterUserAsync(model, UserManager);
+            var result = await BRUserManager.RegisterUserAsync(model, UserManager);
             return Ok(result);
         }
 

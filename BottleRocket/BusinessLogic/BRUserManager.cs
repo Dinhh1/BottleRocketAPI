@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 
 namespace BottleRocket.BusinessLogic
 {
-    public class UserBusinessUtilities
+    public class BRUserManager
     {
         /// <summary>
         /// Registers a new user and also ensures that address is added into the db properly asyncronously
@@ -16,23 +16,21 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userManager">The UserManager context to perform the add</param>
         /// <returns>StatusResult</returns>
-        public static async Task<StatusResult> RegisterUserAsync(RegisterBindingModel model, ApplicationUserManager userManager)
+        public static async Task<StatusResult<RegisterBindingModel>> RegisterUserAsync(RegisterBindingModel model, ApplicationUserManager userManager)
         {
             try
             {
                 var db = ApplicationDbContext.Create();
-
                 var user = ApplicationUser.CreateUser(model);
-
                 IdentityResult userResult = await userManager.CreateAsync(user, model.Password);
 
                 if (!userResult.Succeeded)
                 {
-                    return StatusResult.Error();
+                    return StatusResult<RegisterBindingModel>.Error();
                 }
 
                 // add the address
-                var addressResult = await UserAddressUtilities.InsertUserAddressAsync(model, user.Id);
+                var addressResult = await UserAddressManager.InsertUserAddressAsync(model, user.Id);
 
                 if (addressResult.Code != StatusCode.OK)
                 {
@@ -40,14 +38,14 @@ namespace BottleRocket.BusinessLogic
                     // it seems like CreateAsync is set to autocommit or something. 
                     // This is a little quick and dirty and hacky, but here i am just going to delete the user if we dont succeed with adding the address
                     await userManager.DeleteAsync(user);
-                    return addressResult;
+                    return StatusResult<RegisterBindingModel>.Error(addressResult.Message);
                 }
             }
             catch (Exception ex)
             {
-                return StatusResult.Error(ex.Message);
+                return StatusResult<RegisterBindingModel>.Error(ex.Message);
             }
-            return StatusResult.Success();
+            return StatusResult<RegisterBindingModel>.Success();
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userManager">The UserManager context to perform the add</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult RegisterUser(RegisterBindingModel model, ApplicationUserManager userManager)
+        public static StatusResult<RegisterBindingModel> RegisterUser(RegisterBindingModel model, ApplicationUserManager userManager)
         {
             try
             {
@@ -66,12 +64,12 @@ namespace BottleRocket.BusinessLogic
 
                 if (!userResult.Succeeded)
                 {
-                    return StatusResult.Error();
+                    return StatusResult<RegisterBindingModel>.Error();
                 }
 
                 model.Address = null;
                 // add the address
-                var addressResult = UserAddressUtilities.InsertUserAddress(model, user.Id);
+                var addressResult = UserAddressManager.InsertUserAddress(model, user.Id);
 
                 if (addressResult.Code != StatusCode.OK)
                 {
@@ -79,14 +77,14 @@ namespace BottleRocket.BusinessLogic
                     // it seems like CreateAsync is set to autocommit or something. 
                     // This is a little quick and dirty and hacky, but here i am just going to delete the user if we dont succeed with adding the address
                     userManager.Delete(user);
-                    return addressResult;
+                    return StatusResult<RegisterBindingModel>.Error(addressResult.Message);
                 }
             }
             catch (Exception ex)
             {
-                return StatusResult.Error(ex.Message);
+                return StatusResult<RegisterBindingModel>.Error(ex.Message);
             }
-            return StatusResult.Success();
+            return StatusResult<RegisterBindingModel>.Success();
         }
     }
 }

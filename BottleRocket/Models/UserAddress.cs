@@ -46,8 +46,7 @@ namespace BottleRocket.Models
         /// <returns>UserAddress</returns>
         public static UserAddress CreateAddress(RegisterBindingModel model, string userId)
         {
-            UserAddress userAddress = new UserAddress(model, userId);
-            return userAddress;
+            return new UserAddress(model, userId);
         }
     }
 

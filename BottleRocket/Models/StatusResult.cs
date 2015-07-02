@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace BottleRocket.Models
 {
@@ -15,17 +14,22 @@ namespace BottleRocket.Models
         Error
     }
 
-    public class StatusResult
+    /// <summary>
+    /// StatusResult will be the container class the will return to the client. It's a Generic class thus we can set whatever result we want.
+    /// If no particulare result is returned then leave Result as null
+    /// </summary>
+    public class StatusResult<T>
     {
         public string Message { get; set; }
         public StatusCode Code { get; set; }
+        public T Result { get; set; }
 
         /// <summary>
         /// Creates an Error StatusResult object
         /// </summary>
         /// <param name="msg">The error msg</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult Error(string msg)
+        public static StatusResult<T> Error(string msg)
         {
             return Create(StatusCode.Error, String.IsNullOrEmpty(msg) ? "An Error has occured" : msg);
         }
@@ -35,7 +39,7 @@ namespace BottleRocket.Models
         /// </summary>
         /// <param name="msg">The error msg</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult Error()
+        public static StatusResult<T> Error()
         {
             return Error(null);
         }
@@ -45,7 +49,7 @@ namespace BottleRocket.Models
         /// </summary>
         /// <param name="msg">The error msg</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult Success()
+        public static StatusResult<T> Success()
         {
             return Success(null);
         }
@@ -55,9 +59,32 @@ namespace BottleRocket.Models
         /// </summary>
         /// <param name="msg">The success msg</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult Success(string msg)
+        public static StatusResult<T> Success(string msg)
         {
             return Create(StatusCode.OK, String.IsNullOrEmpty(msg) ? "OK" : msg);
+        }
+
+        /// <summary>
+        /// Creates a Success StatusResult object
+        /// </summary>
+        /// <param name="obj">The result object</param>
+        /// <returns>StatusResult</returns>
+        public static StatusResult<T> Success(T obj)
+        {
+            return Success(null, obj);
+        }
+
+        /// <summary>
+        /// Creates a Success StatusResult object
+        /// </summary>
+        /// <param name="msg">The success msg</param>
+        /// <param name="obj">The result object</param>
+        /// <returns>StatusResult</returns>
+        public static StatusResult<T> Success(string msg, T obj)
+        {
+            var sr = Create(StatusCode.OK, String.IsNullOrEmpty(msg) ? "OK" : msg);
+            sr.Result = obj;
+            return sr;
         }
 
         /// <summary>
@@ -66,9 +93,10 @@ namespace BottleRocket.Models
         /// <param name="c">The status code</param>
         /// <param name="msg">The success msg</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult Create(StatusCode c, string msg)
+        public static StatusResult<T> Create(StatusCode c, string msg)
         {
-            return new StatusResult() { Code = c, Message = msg };
+            return new StatusResult<T>() { Code = c, Message = msg };
         }
+
     }
 }
