@@ -14,7 +14,7 @@ using BottleRocket.BusinessLogic;
 
 namespace BottleRocket.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class SchedulePickupController : ApiController
     {
 

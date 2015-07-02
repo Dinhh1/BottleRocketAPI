@@ -37,6 +37,35 @@ namespace BottleRocket.BusinessLogic
         }
 
         /// <summary>
+        /// Checks if the user has a pickup already scheduled
+        /// </summary>
+        /// <param name="userId">The user's Id </param>
+        /// <returns>bool</returns>
+        public static bool CanRequestPickup(string userId)
+        {
+            try
+            {
+                var db = ScheduledPickupDbContext.Create();
+                // check if the user has any pending pickups
+                var query = (from p in db.ScheduledPickups
+                            where p.UserId == userId && p.IsPickedUp == false
+                            select p).FirstOrDefault();
+                if (query != null)
+                {
+                    // user has a pending pickup, do not schedule another one
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // silent exception
+                return false;
+            }
+            return true;
+        }
+
+
+        /// <summary>
         /// Insert a pickup for user into db
         /// </summary>
         /// <param name="userId">The user's Id </param>
@@ -70,9 +99,17 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ScheduledPickupDbContext.Create();
-                db.ScheduledPickups.Add(p);
-                db.SaveChanges();
+                // check if the user can request a pickup before inserting
+                if (CanRequestPickup(p.UserId))
+                {
+                    var db = ScheduledPickupDbContext.Create();
+                    db.ScheduledPickups.Add(p);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    return StatusResult<ScheduledPickup>.Error("User aleady have a pickup scheduled");
+                }
             }
             catch (Exception ex)
             {
@@ -115,9 +152,16 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ScheduledPickupDbContext.Create();
-                db.ScheduledPickups.Add(p);
-                await db.SaveChangesAsync();
+                if (CanRequestPickup(p.UserId))
+                {
+                    var db = ScheduledPickupDbContext.Create();
+                    db.ScheduledPickups.Add(p);
+                    await db.SaveChangesAsync();
+                }
+                else
+                {
+                    return StatusResult<ScheduledPickup>.Error("User aleady have a pickup scheduled");
+                }
             }
             catch (Exception ex)
             {
