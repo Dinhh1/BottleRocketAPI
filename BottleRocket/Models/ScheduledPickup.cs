@@ -11,6 +11,7 @@ namespace BottleRocket.Models
     public class ScheduledPickup
     {
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string UserId { get; set; }
         public DateTime DateCreated { get; set; }
