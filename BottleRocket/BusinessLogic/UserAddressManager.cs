@@ -12,7 +12,6 @@ namespace BottleRocket.BusinessLogic
     /// </summary>
     public class UserAddressManager
     {
-
         /// <summary>
         /// Add a user address asyncronously
         /// </summary>
