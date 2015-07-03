@@ -75,10 +75,10 @@ namespace BottleRocket.BusinessLogic
         }
 
         /// <summary>
-        /// Search for a UserAddress by address id. This method returns null if not found
+        /// Search for a UserAddress by address id.
         /// </summary>
         /// <param name="id">UserAddress object's id</param>
-        /// <returns>UserAddress if found, NULL otherwise</returns>
+        /// <returns>StatusResult</returns>
         public static StatusResult<UserAddress> GetUserAddress(int id)
         {
             var query = UserAddressesDbContext.Create().UserAddresses.Find(id);

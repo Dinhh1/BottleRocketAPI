@@ -251,45 +251,45 @@ namespace BottleRocket.BusinessLogic
 
         #region PickupReceipts  Methods
 
-        /// <summary>
-        /// Insert a pickup receipt asyncronously
-        /// </summary>
-        /// <param name="r">PickupReceipt object properly populated</param>
-        /// <returns>StatusResult</returns>
-        public static async Task<StatusResult<PickupReceipt>> InsertPickupReceiptAsync(PickupReceipt r)
-        {
-            try
-            {
-                var db = PickupReceiptDbContext.Create();
-                db.PickupReceipts.Add(r);
-                await db.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return StatusResult<PickupReceipt>.Error(ex.Message);
-            }
-            return StatusResult<PickupReceipt>.Success();
-        }
+        ///// <summary>
+        ///// Insert a pickup receipt asyncronously
+        ///// </summary>
+        ///// <param name="r">PickupReceipt object properly populated</param>
+        ///// <returns>StatusResult</returns>
+        //public static async Task<StatusResult<PickupReceipt>> InsertPickupReceiptAsync(PickupReceipt r)
+        //{
+        //    try
+        //    {
+        //        var db = PickupReceiptDbContext.Create();
+        //        db.PickupReceipts.Add(r);
+        //        await db.SaveChangesAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusResult<PickupReceipt>.Error(ex.Message);
+        //    }
+        //    return StatusResult<PickupReceipt>.Success();
+        //}
 
-        /// <summary>
-        /// Insert a pickup receipt 
-        /// </summary>
-        /// <param name="r">PickupReceipt object properly populated</param>
-        /// <returns>StatusResult</returns>
-        public static StatusResult<PickupReceipt> InsertPickupReceipt(PickupReceipt r)
-        {
-            try
-            {
-                var db = PickupReceiptDbContext.Create();
-                db.PickupReceipts.Add(r);
-                db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                return StatusResult<PickupReceipt>.Error(ex.Message);
-            }
-            return StatusResult<PickupReceipt>.Success();
-        }
+        ///// <summary>
+        ///// Insert a pickup receipt 
+        ///// </summary>
+        ///// <param name="r">PickupReceipt object properly populated</param>
+        ///// <returns>StatusResult</returns>
+        //public static StatusResult<PickupReceipt> InsertPickupReceipt(PickupReceipt r)
+        //{
+        //    try
+        //    {
+        //        var db = PickupReceiptDbContext.Create();
+        //        db.PickupReceipts.Add(r);
+        //        db.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusResult<PickupReceipt>.Error(ex.Message);
+        //    }
+        //    return StatusResult<PickupReceipt>.Success();
+        //}
 
         #endregion
     }
