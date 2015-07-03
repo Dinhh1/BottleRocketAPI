@@ -69,7 +69,9 @@ CREATE TABLE PickupReceipts
 	GlassTotal Decimal NULL DEFAULT 0,
 	Plastic1Total Decimal NULL DEFAULT 0,
 	Plastic2Total Decimal NULL DEFAULT 0,
-	OverallTotal Decimal NULL Default 0
+	OverallTotal Decimal NULL Default 0,
+	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
+	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
 )
 
 ALTER TABLE PickupReceipts ADD 
@@ -99,7 +101,9 @@ CREATE TABLE UserMetrics
 	AluminumWeight Decimal NULL DEFAULT 0,
 	GlassWeight Decimal NULL DEFAULT 0,
 	Plastic1Weight Decimal NULL DEFAULT 0,
-	Plastic2Weight Decimal NULL DEFAULT 0
+	Plastic2Weight Decimal NULL DEFAULT 0,
+	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
+	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
 )
 
 ALTER TABLE UserMetrics ADD 

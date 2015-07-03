@@ -26,7 +26,7 @@ namespace BottleRocket.Controllers
                 return Ok(StatusResult<ScheduledPickup>.Error("Model is Invalid"));
             }
 
-            var response = await SchedulePickupManager.InsertScheduledPickupAsync(model.UserId);
+            var response = await PickupManager.SchedulePickupAsync(model.UserId);
             return Ok(response);
         }
 
