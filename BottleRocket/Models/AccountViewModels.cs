@@ -27,13 +27,10 @@ namespace BottleRocket.Models
 
     public class UserInfoViewModel
     {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
-
-        public bool HasRegistered { get; set; }
-
-        public string LoginProvider { get; set; }
-
-        public UserAddress Address { get; set; }
     }
 
     public class UserLoginInfoViewModel

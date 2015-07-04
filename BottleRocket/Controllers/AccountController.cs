@@ -65,10 +65,8 @@ namespace BottleRocket.Controllers
             var ua = UserAddressManager.GetUserAddressByUserId(User.Identity.GetUserId());
             return new UserInfoViewModel
             {
-                Email = User.Identity.GetUserName(),
-                HasRegistered = externalLogin == null,
-                Address = ua.Result,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
+                Id = User.Identity.GetUserId(),
+                Email = User.Identity.GetUserName()
             };
         }
 

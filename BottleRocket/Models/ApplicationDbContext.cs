@@ -11,6 +11,8 @@ namespace BottleRocket.Models
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<ScheduledPickup> ScheduledPickups { get; set; }
         public DbSet<Global> Globals { get; set; }
+        public DbSet<Community> Communities { get; set; }
+        public DbSet<PickupCycle> PickupCycles { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

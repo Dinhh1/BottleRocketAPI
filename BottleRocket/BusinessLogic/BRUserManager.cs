@@ -16,8 +16,9 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userManager">The UserManager context to perform the add</param>
         /// <returns>StatusResult</returns>
-        public static async Task<StatusResult<RegisterBindingModel>> RegisterUserAsync(RegisterBindingModel model, ApplicationUserManager userManager)
+        public static async Task<StatusResult<UserInfoViewModel>> RegisterUserAsync(RegisterBindingModel model, ApplicationUserManager userManager)
         {
+            UserInfoViewModel obj = null;
             try
             {
                 var user = ApplicationUser.CreateUser(model);
@@ -25,7 +26,7 @@ namespace BottleRocket.BusinessLogic
 
                 if (!userResult.Succeeded)
                 {
-                    return StatusResult<RegisterBindingModel>.Error();
+                    return StatusResult<UserInfoViewModel>.Error();
                 }
 
                 // add the address
@@ -37,14 +38,21 @@ namespace BottleRocket.BusinessLogic
                     // it seems like CreateAsync is set to autocommit or something. 
                     // This is a little quick and dirty and hacky, but here i am just going to delete the user if we dont succeed with adding the address
                     await userManager.DeleteAsync(user);
-                    return StatusResult<RegisterBindingModel>.Error(addressResult.Message);
+                    return StatusResult<UserInfoViewModel>.Error(addressResult.Message);
                 }
+                obj = new UserInfoViewModel()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Id = user.Id
+                };
             }
             catch (Exception ex)
             {
-                return StatusResult<RegisterBindingModel>.Error(ex.Message);
+                return StatusResult<UserInfoViewModel>.Error(ex.Message);
             }
-            return StatusResult<RegisterBindingModel>.Success();
+            return StatusResult<UserInfoViewModel>.Success(obj);
         }
 
         /// <summary>
@@ -53,8 +61,9 @@ namespace BottleRocket.BusinessLogic
         /// <param name="model">The RegisterBindingModel with appropriate data</param>
         /// <param name="userManager">The UserManager context to perform the add</param>
         /// <returns>StatusResult</returns>
-        public static StatusResult<RegisterBindingModel> RegisterUser(RegisterBindingModel model, ApplicationUserManager userManager)
+        public static StatusResult<UserInfoViewModel> RegisterUser(RegisterBindingModel model, ApplicationUserManager userManager)
         {
+            UserInfoViewModel obj = null;
             try
             {
                 var user = ApplicationUser.CreateUser(model);
@@ -62,7 +71,7 @@ namespace BottleRocket.BusinessLogic
 
                 if (!userResult.Succeeded)
                 {
-                    return StatusResult<RegisterBindingModel>.Error();
+                    return StatusResult<UserInfoViewModel>.Error();
                 }
 
                 model.Address = null;
@@ -75,14 +84,21 @@ namespace BottleRocket.BusinessLogic
                     // it seems like CreateAsync is set to autocommit or something. 
                     // This is a little quick and dirty and hacky, but here i am just going to delete the user if we dont succeed with adding the address
                     userManager.Delete(user);
-                    return StatusResult<RegisterBindingModel>.Error(addressResult.Message);
+                    return StatusResult<UserInfoViewModel>.Error(addressResult.Message);
                 }
+                obj = new UserInfoViewModel()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Id = user.Id
+                };
             }
             catch (Exception ex)
             {
-                return StatusResult<RegisterBindingModel>.Error(ex.Message);
+                return StatusResult<UserInfoViewModel>.Error(ex.Message);
             }
-            return StatusResult<RegisterBindingModel>.Success();
+            return StatusResult<UserInfoViewModel>.Success(obj);
         }
 
     }
