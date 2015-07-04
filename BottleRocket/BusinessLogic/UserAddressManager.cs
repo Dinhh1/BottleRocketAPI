@@ -35,7 +35,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.UserAddresses.Add(a);
                 await db.SaveChangesAsync();
             }
@@ -66,7 +66,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.UserAddresses.Add(a);
                 db.SaveChanges();
             }
@@ -84,15 +84,12 @@ namespace BottleRocket.BusinessLogic
         /// <returns>StatusResult</returns>
         public static StatusResult<UserAddress> GetUserAddress(int id)
         {
-            var query = ApplicationDbContext.Create().UserAddresses.Find(id);
+            var query = BottleRocketDbContext.Create().UserAddresses.Find(id);
             if (query == null)
             {
                 return StatusResult<UserAddress>.Error("No Results found");
             }
-            else
-            {
-                return StatusResult<UserAddress>.Success(query);
-            }
+            return StatusResult<UserAddress>.Success(query);
         }
 
         /// <summary>
@@ -102,15 +99,13 @@ namespace BottleRocket.BusinessLogic
         /// <returns>UserAddress if found, NULL otherwise</returns>
         public static async Task<StatusResult<UserAddress>> GetUserAddressAsync(int id)
         {
-            var query = await ApplicationDbContext.Create().UserAddresses.FindAsync(id);
+            var query = await BottleRocketDbContext.Create().UserAddresses.FindAsync(id);
             if (query == null)
             {
                 return StatusResult<UserAddress>.Error("No Results found");
             }
-            else
-            {
-                return StatusResult<UserAddress>.Success(query);
-            }
+            return StatusResult<UserAddress>.Success(query);
+       
         }
 
         /// <summary>
@@ -123,7 +118,7 @@ namespace BottleRocket.BusinessLogic
             UserAddress address = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 // perform a query using linq
                 address = (from addy in db.UserAddresses
                              where addy.UserId == userId
@@ -150,7 +145,7 @@ namespace BottleRocket.BusinessLogic
             UserAddress address = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 // perform a query using linq
                 address = await (from addy in db.UserAddresses
                            where addy.UserId == userId

@@ -4,9 +4,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+
 namespace BottleRocket.Models
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class BottleRocketDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<ScheduledPickup> ScheduledPickups { get; set; }
@@ -14,14 +15,14 @@ namespace BottleRocket.Models
         public DbSet<Community> Communities { get; set; }
         public DbSet<PickupCycle> PickupCycles { get; set; }
 
-        public ApplicationDbContext()
+        public BottleRocketDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
 
-        public static ApplicationDbContext Create()
+        public static BottleRocketDbContext Create()
         {
-            return new ApplicationDbContext();
+            return new BottleRocketDbContext();
         }
     }
 }

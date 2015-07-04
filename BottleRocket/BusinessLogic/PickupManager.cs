@@ -23,7 +23,7 @@ namespace BottleRocket.BusinessLogic
             List<ScheduledPickup> query = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 query = (from p in db.ScheduledPickups
                          where p.UserId == userId
                          select p).ToList();
@@ -50,7 +50,7 @@ namespace BottleRocket.BusinessLogic
             List<ScheduledPickup> query = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 query = await (from p in db.ScheduledPickups
                                where p.UserId == userId
                                select p).ToListAsync();
@@ -77,7 +77,7 @@ namespace BottleRocket.BusinessLogic
             ScheduledPickup obj = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 var query = await (from p in db.ScheduledPickups
                                    where p.UserId == userId && p.IsPickedUp == false
                                    select p).SingleOrDefaultAsync();
@@ -104,7 +104,7 @@ namespace BottleRocket.BusinessLogic
             ScheduledPickup obj = null;
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 var query = (from p in db.ScheduledPickups
                              where p.UserId == userId && p.IsPickedUp == false
                              select p).SingleOrDefault();
@@ -233,7 +233,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.ScheduledPickups.Add(p);
                 db.SaveChanges();
             }
@@ -280,7 +280,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.ScheduledPickups.Add(p);
                 await db.SaveChangesAsync();
             }
@@ -296,7 +296,7 @@ namespace BottleRocket.BusinessLogic
             //TODO:: NEED TO BE TESTED, NOT SURE IF THIS WORKS
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.Entry(p).State = EntityState.Modified;
                 await db.SaveChangesAsync();
             }
@@ -312,7 +312,7 @@ namespace BottleRocket.BusinessLogic
             //TODO:: NEED TO BE TESTED, NOT SURE IF THIS WORKS
             try
             {
-                var db = ApplicationDbContext.Create();
+                var db = BottleRocketDbContext.Create();
                 db.Entry(p).State = EntityState.Modified;
                 db.SaveChanges();
             }
