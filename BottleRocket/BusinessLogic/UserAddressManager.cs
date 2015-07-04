@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using BottleRocket.Models;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+
 
 namespace BottleRocket.BusinessLogic
 {
@@ -32,7 +35,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = UserAddressesDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.UserAddresses.Add(a);
                 await db.SaveChangesAsync();
             }
@@ -63,7 +66,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = UserAddressesDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.UserAddresses.Add(a);
                 db.SaveChanges();
             }
@@ -81,7 +84,7 @@ namespace BottleRocket.BusinessLogic
         /// <returns>StatusResult</returns>
         public static StatusResult<UserAddress> GetUserAddress(int id)
         {
-            var query = UserAddressesDbContext.Create().UserAddresses.Find(id);
+            var query = ApplicationDbContext.Create().UserAddresses.Find(id);
             if (query == null)
             {
                 return StatusResult<UserAddress>.Error("No Results found");
@@ -99,7 +102,7 @@ namespace BottleRocket.BusinessLogic
         /// <returns>UserAddress if found, NULL otherwise</returns>
         public static async Task<StatusResult<UserAddress>> GetUserAddressAsync(int id)
         {
-            var query = await UserAddressesDbContext.Create().UserAddresses.FindAsync(id);
+            var query = await ApplicationDbContext.Create().UserAddresses.FindAsync(id);
             if (query == null)
             {
                 return StatusResult<UserAddress>.Error("No Results found");
@@ -120,11 +123,38 @@ namespace BottleRocket.BusinessLogic
             UserAddress address = null;
             try
             {
-                var db = UserAddressesDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 // perform a query using linq
                 address = (from addy in db.UserAddresses
                              where addy.UserId == userId
                              select addy).SingleOrDefault();
+                if (address == null)
+                {
+                    return StatusResult<UserAddress>.Error("No Results found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<UserAddress>.Error(ex.Message);
+            }
+            return StatusResult<UserAddress>.Success(address);
+        }
+
+        /// <summary>
+        /// Search for a UserAddress by User id async. This method returns null if not found
+        /// </summary>
+        /// <param name="userId">The address of the provided userId</param>
+        /// <returns>UserAddress if found, NULL otherwise</returns>
+        public static async Task<StatusResult<UserAddress>> GetUserAddressByUserIdAsync(string userId)
+        {
+            UserAddress address = null;
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                // perform a query using linq
+                address = await (from addy in db.UserAddresses
+                           where addy.UserId == userId
+                           select addy).SingleOrDefaultAsync();
                 if (address == null)
                 {
                     return StatusResult<UserAddress>.Error("No Results found");

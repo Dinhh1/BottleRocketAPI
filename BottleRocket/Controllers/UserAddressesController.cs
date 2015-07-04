@@ -15,7 +15,7 @@ namespace BottleRocket.Controllers
 {
     public class UserAddressesController : ApiController
     {
-        private UserAddressesDbContext db = new UserAddressesDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/UserAddresses
         public IQueryable<UserAddress> GetUserAddresses()

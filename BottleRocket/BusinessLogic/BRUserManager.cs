@@ -20,7 +20,6 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
                 var user = ApplicationUser.CreateUser(model);
                 IdentityResult userResult = await userManager.CreateAsync(user, model.Password);
 
@@ -58,7 +57,6 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ApplicationDbContext.Create();
                 var user = ApplicationUser.CreateUser(model);
                 IdentityResult userResult = userManager.Create(user, model.Password);
 
@@ -86,5 +84,6 @@ namespace BottleRocket.BusinessLogic
             }
             return StatusResult<RegisterBindingModel>.Success();
         }
+
     }
 }

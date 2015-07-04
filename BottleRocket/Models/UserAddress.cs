@@ -50,18 +50,4 @@ namespace BottleRocket.Models
         }
     }
 
-    public class UserAddressesDbContext : DbContext
-    {
-        public DbSet<UserAddress> UserAddresses { get; set; }
-        public UserAddressesDbContext()
-            : base("DefaultConnection")
-        {
-        }
-        public static UserAddressesDbContext Create()
-        {
-            return new UserAddressesDbContext();
-        }
-    }
-
-
 }

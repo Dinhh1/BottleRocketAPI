@@ -8,17 +8,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BottleRocket.Models
 {
-    [Table("ScheduledPickups")]
-    public class ScheduledPickup
+    [Table("Globals")]
+    public class Global
     {
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string UserId { get; set; }
+        public string key { get; set; }
+        public string value { get; set; }
         public DateTime DateCreated { get; set; }
-        public DateTime? DatePickedUp { get; set; }
-        public bool IsPickedUp { get; set; }
-        public int AddressId { get; set; }
-
+        public DateTime LastUpdated { get; set; }
+        public string Description { get; set; }
     }
+
 }

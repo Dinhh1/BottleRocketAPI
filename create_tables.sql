@@ -58,68 +58,100 @@ CONSTRAINT FK_PickUp_Addy
 	REFERENCES UserAddresses(Id)
 GO
 
+-- Globals
+
+CREATE TABLE Globals
+(
+	Id int IDENTITY(1,1) NOT NULL,
+	[Key] nvarchar(max) NOT NULL,
+	[Value] nvarchar(max) NOT NULL,
+	DateCreated Datetime NOT NULL DEFAULT GETUTCDATE(),
+	LastUpdated DateTime NOT NULL DEFAULT GETUTCDATE(),
+	[Description] nvarchar(max) NULL
+)
+
+ALTER TABLE Globals ADD
+CONSTRAINT PK_Globals PRIMARY KEY CLUSTERED (Id ASC)
+GO
+
+-- Communities
+
+CREATE TABLE Communities
+(
+	Id int IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(128) NOT NULL,
+	DateCreated DateTime NOT NULL DEFAULT GETUTCDATE(),
+	LastUpdated DateTime NOT NULL DEFAULT GETUTCDATE()
+)
+
+ALTER TABLE Communities ADD
+CONSTRAINT PK_CommunityId PRIMARY KEY CLUSTERED (Id ASC)
+GO
+
+
  -- Pickup Receipts
+ -- DEPRECATED: Data Model was changed
 
-CREATE TABLE PickupReceipts
-(
-	Id int IDENTITY(1,1) NOT NULL,
-	UserId nvarchar(128) NOT NULL,
-	ScheduledPickupId int NOT NULL,
-	AluminumTotal Decimal NULL DEFAULT 0,
-	GlassTotal Decimal NULL DEFAULT 0,
-	Plastic1Total Decimal NULL DEFAULT 0,
-	Plastic2Total Decimal NULL DEFAULT 0,
-	OverallTotal Decimal NULL Default 0,
-	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
-	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
-)
+--CREATE TABLE PickupReceipts
+--(
+--	Id int IDENTITY(1,1) NOT NULL,
+--	UserId nvarchar(128) NOT NULL,
+--	ScheduledPickupId int NOT NULL,
+--	AluminumTotal Decimal NULL DEFAULT 0,
+--	GlassTotal Decimal NULL DEFAULT 0,
+--	Plastic1Total Decimal NULL DEFAULT 0,
+--	Plastic2Total Decimal NULL DEFAULT 0,
+--	OverallTotal Decimal NULL Default 0,
+--	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
+--	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
+--)
 
-ALTER TABLE PickupReceipts ADD 
-	CONSTRAINT PK_Receipt PRIMARY KEY CLUSTERED (Id ASC)
-GO
+--ALTER TABLE PickupReceipts ADD 
+--	CONSTRAINT PK_Receipt PRIMARY KEY CLUSTERED (Id ASC)
+--GO
 
-ALTER TABLE PickupReceipts ADD
-CONSTRAINT FK_Receipts_UserId
-	FOREIGN KEY (UserId)
-	REFERENCES AspNetUsers (Id)
-	ON DELETE CASCADE
-GO
+--ALTER TABLE PickupReceipts ADD
+--CONSTRAINT FK_Receipts_UserId
+--	FOREIGN KEY (UserId)
+--	REFERENCES AspNetUsers (Id)
+--	ON DELETE CASCADE
+--GO
 
-ALTER TABLE PickupReceipts ADD
-CONSTRAINT FK_Receipts_ScheduleId
-	FOREIGN KEY (ScheduledPickupId)
-	REFERENCES ScheduledPickups(Id)
-GO
+--ALTER TABLE PickupReceipts ADD
+--CONSTRAINT FK_Receipts_ScheduleId
+--	FOREIGN KEY (ScheduledPickupId)
+--	REFERENCES ScheduledPickups(Id)
+--GO
 
--- UserMetric
+---- UserMetric
 
-CREATE TABLE UserMetrics
-(
-	Id int IDENTITY(1,1) NOT NULL,
-	UserId nvarchar(128) NOT NULL,
-	ReceiptId int NOT NULL,
-	AluminumWeight Decimal NULL DEFAULT 0,
-	GlassWeight Decimal NULL DEFAULT 0,
-	Plastic1Weight Decimal NULL DEFAULT 0,
-	Plastic2Weight Decimal NULL DEFAULT 0,
-	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
-	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
-)
+--CREATE TABLE UserMetrics
+--(
+--	Id int IDENTITY(1,1) NOT NULL,
+--	UserId nvarchar(128) NOT NULL,
+--	ReceiptId int NOT NULL,
+--	AluminumWeight Decimal NULL DEFAULT 0,
+--	GlassWeight Decimal NULL DEFAULT 0,
+--	Plastic1Weight Decimal NULL DEFAULT 0,
+--	Plastic2Weight Decimal NULL DEFAULT 0,
+--	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
+--	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
+--)
 
-ALTER TABLE UserMetrics ADD 
-	CONSTRAINT PK_UserMetrics PRIMARY KEY CLUSTERED (Id ASC)
-GO
+--ALTER TABLE UserMetrics ADD 
+--	CONSTRAINT PK_UserMetrics PRIMARY KEY CLUSTERED (Id ASC)
+--GO
 
-ALTER TABLE UserMetrics ADD
-CONSTRAINT FK_Metrics_Receipt
-	FOREIGN KEY (ReceiptId)
-	REFERENCES PickupReceipts(Id)
-	ON DELETE CASCADE
-GO
+--ALTER TABLE UserMetrics ADD
+--CONSTRAINT FK_Metrics_Receipt
+--	FOREIGN KEY (ReceiptId)
+--	REFERENCES PickupReceipts(Id)
+--	ON DELETE CASCADE
+--GO
 
-ALTER TABLE UserMetrics ADD
-CONSTRAINT FK_Metrics_UserId
-	FOREIGN KEY (UserId)
-	REFERENCES AspNetUsers (Id)
-GO
+--ALTER TABLE UserMetrics ADD
+--CONSTRAINT FK_Metrics_UserId
+--	FOREIGN KEY (UserId)
+--	REFERENCES AspNetUsers (Id)
+--GO
 

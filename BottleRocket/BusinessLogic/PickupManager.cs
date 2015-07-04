@@ -12,6 +12,7 @@ namespace BottleRocket.BusinessLogic
     public class PickupManager
     {
         #region ScheduledPickup Methods
+
         /// <summary>
         /// Search for a all scheduled pickups for a given user
         /// </summary>
@@ -22,7 +23,7 @@ namespace BottleRocket.BusinessLogic
             List<ScheduledPickup> query = null;
             try
             {
-                var db = ScheduledPickupDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 query = (from p in db.ScheduledPickups
                          where p.UserId == userId
                          select p).ToList();
@@ -34,9 +35,101 @@ namespace BottleRocket.BusinessLogic
             }
             catch (Exception ex)
             {
-                    return StatusResult<List<ScheduledPickup>>.Error(ex.Message);
+                return StatusResult<List<ScheduledPickup>>.Error(ex.Message);
             }
-            return StatusResult<List<ScheduledPickup>>.Success(query);  
+            return StatusResult<List<ScheduledPickup>>.Success(query);
+        }
+
+        /// <summary>
+        /// Search for a all scheduled pickups for a given user async
+        /// </summary>
+        /// <param name="userId">The user's Id </param>
+        /// <returns>StatusResult</returns>
+        public static async Task<StatusResult<List<ScheduledPickup>>> GetScheduledPickupsForUserAsync(string userId)
+        {
+            List<ScheduledPickup> query = null;
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                query = await (from p in db.ScheduledPickups
+                               where p.UserId == userId
+                               select p).ToListAsync();
+
+                if (query == null || !query.Any())
+                {
+                    return StatusResult<List<ScheduledPickup>>.Error("No results found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<List<ScheduledPickup>>.Error(ex.Message);
+            }
+            return StatusResult<List<ScheduledPickup>>.Success(query);
+        }
+
+        /// <summary>
+        /// Get the user's pending pickup async, if user doesn't have one this will return error
+        /// </summary>
+        /// <param name="userId">The user's Id </param>
+        /// <returns>StatusResult</returns>
+        public static async Task<StatusResult<ScheduledPickup>> GetPendingPickupAsync(string userId)
+        {
+            ScheduledPickup obj = null;
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                var query = await (from p in db.ScheduledPickups
+                                   where p.UserId == userId && p.IsPickedUp == false
+                                   select p).SingleOrDefaultAsync();
+                if (query == null)
+                {
+                    return StatusResult<ScheduledPickup>.Error("User has no pending pickup");
+                }
+                obj = query;
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<ScheduledPickup>.Error(ex.Message);
+            }
+            return StatusResult<ScheduledPickup>.Success(obj);
+        }
+
+        /// <summary>
+        /// Get the user's pending pickup, if user doesn't have one this will return error
+        /// </summary>
+        /// <param name="userId">The user's Id </param>
+        /// <returns>StatusResult</returns>
+        public static StatusResult<ScheduledPickup> GetPendingPickup(string userId)
+        {
+            ScheduledPickup obj = null;
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                var query = (from p in db.ScheduledPickups
+                             where p.UserId == userId && p.IsPickedUp == false
+                             select p).SingleOrDefault();
+                if (query == null)
+                {
+                    return StatusResult<ScheduledPickup>.Error("User has no pending pickup");
+                }
+                obj = query;
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<ScheduledPickup>.Error(ex.Message);
+            }
+            return StatusResult<ScheduledPickup>.Success(obj);
+        }
+
+        /// <summary>
+        /// Checks if the user has a pickup already scheduled async
+        /// </summary>
+        /// <param name="userId">The user's Id </param>
+        /// <returns>bool</returns>
+        private static async Task<bool> CanRequestPickupAsync(string userId)
+        {
+            var result = await GetPendingPickupAsync(userId);
+            return result.Code == StatusCode.OK ? false : true;
         }
 
         /// <summary>
@@ -46,25 +139,8 @@ namespace BottleRocket.BusinessLogic
         /// <returns>bool</returns>
         private static bool CanRequestPickup(string userId)
         {
-            try
-            {
-                var db = ScheduledPickupDbContext.Create();
-                // check if the user has any pending pickups
-                var query = (from p in db.ScheduledPickups
-                            where p.UserId == userId && p.IsPickedUp == false
-                            select p).FirstOrDefault();
-                if (query != null)
-                {
-                    // user has a pending pickup, do not schedule another one
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                // silent exception
-                return false;
-            }
-            return true;
+            var result = GetPendingPickup(userId);
+            return result.Code == StatusCode.OK ? false : true;
         }
 
         /// <summary>
@@ -105,7 +181,7 @@ namespace BottleRocket.BusinessLogic
             try
             {
                 // check if the user can request a pickup before inserting
-                if (CanRequestPickup(userId))
+                if (await CanRequestPickupAsync(userId))
                 {
                     result = await InsertScheduledPickupAsync(userId);
                 }
@@ -157,7 +233,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ScheduledPickupDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.ScheduledPickups.Add(p);
                 db.SaveChanges();
             }
@@ -204,7 +280,7 @@ namespace BottleRocket.BusinessLogic
         {
             try
             {
-                var db = ScheduledPickupDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.ScheduledPickups.Add(p);
                 await db.SaveChangesAsync();
             }
@@ -220,7 +296,7 @@ namespace BottleRocket.BusinessLogic
             //TODO:: NEED TO BE TESTED, NOT SURE IF THIS WORKS
             try
             {
-                var db = ScheduledPickupDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.Entry(p).State = EntityState.Modified;
                 await db.SaveChangesAsync();
             }
@@ -236,7 +312,7 @@ namespace BottleRocket.BusinessLogic
             //TODO:: NEED TO BE TESTED, NOT SURE IF THIS WORKS
             try
             {
-                var db = ScheduledPickupDbContext.Create();
+                var db = ApplicationDbContext.Create();
                 db.Entry(p).State = EntityState.Modified;
                 db.SaveChanges();
             }

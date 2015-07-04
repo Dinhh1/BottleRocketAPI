@@ -74,6 +74,8 @@ namespace BottleRocket.Models
         public string ConfirmPassword { get; set; }
     }
 
+
+
     public class RegisterExternalBindingModel
     {
         [Required]
@@ -104,6 +106,21 @@ namespace BottleRocket.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class UserQueryBindingModel
+    {
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Display(Name = "Community Name")]
+        public string CommunityName { get; set; }
+
+        [Display(Name = "Email")]
+        public string UserName { get; set; }
     }
 
     public class SchedulePickupBindingModel
