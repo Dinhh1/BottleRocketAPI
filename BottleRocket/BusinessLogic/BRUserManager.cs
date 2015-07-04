@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using BottleRocket.Models;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
 
 namespace BottleRocket.BusinessLogic
@@ -101,5 +103,120 @@ namespace BottleRocket.BusinessLogic
             return StatusResult<UserInfoViewModel>.Success(obj);
         }
 
+        public static async Task<StatusResult<Community>> GetCommunityAsync(string cname)
+        {
+            Community community = null;
+            try
+            {
+                var db = BottleRocketDbContext.Create();
+                var query = await (from c in db.Communities
+                             where c.Name == cname
+                             select c).SingleOrDefaultAsync();
+                if (query == null)
+                {
+                    return StatusResult<Community>.Error("No Results Found");
+                }
+                community = query;
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<Community>.Error(ex.Message);
+            }
+            return StatusResult<Community>.Success(community);
+
+        }
+        public static StatusResult<Community> GetCommunity(string cname)
+        {
+            Community community = null;
+            try
+            {
+                var db = BottleRocketDbContext.Create();
+                var query = (from c in db.Communities
+                             where c.Name == cname
+                             select c).SingleOrDefault();
+                if (query == null)
+                {
+                    return StatusResult<Community>.Error("No Results Found");
+                }
+                community = query;
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<Community>.Error(ex.Message);
+            }
+            return StatusResult<Community>.Success(community);
+        }
+
+        private static bool DoesCommunityExist(string cname)
+        {
+            var result = GetCommunity(cname);
+            return result.Code == StatusCode.OK ? true : false;
+        }
+
+        public static async Task<bool> DoesCommunityExistAsync(string cname)
+        {
+            var result = await GetCommunityAsync(cname);
+            return result.Code == StatusCode.OK ? true : false;
+        }
+        public static StatusResult<Community> CreateCommunity(string cname)
+        {
+            // check if user exist
+            if (DoesCommunityExist(cname))
+            {
+                return StatusResult<Community>.Error("Community already exist");
+            }
+            Community community = new Community()
+            {
+                Name = cname,
+                DateCreated = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow
+            };
+            return InsertNewCommunity(community); // insert new community
+        }
+
+        public static async Task<StatusResult<Community>> CreateCommunityAsync(string cname)
+        {
+            if (await DoesCommunityExistAsync(cname))
+            {
+                return StatusResult<Community>.Error("Community already exist");
+            }
+            Community community = new Community()
+            {
+                Name = cname,
+                DateCreated = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow
+            };
+            return await InsertNewCommunityAsync(community);
+        }
+
+        private static StatusResult<Community> InsertNewCommunity(Community community)
+        {
+            try
+            {
+                var db = BottleRocketDbContext.Create();
+                db.Communities.Add(community);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<Community>.Error(ex.Message);
+            }
+            return StatusResult<Community>.Success(community);
+        }
+
+        private static async Task<StatusResult<Community>> InsertNewCommunityAsync(Community community)
+        {
+            try
+            {
+                var db = BottleRocketDbContext.Create();
+                db.Communities.Add(community);
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<Community>.Error(ex.Message);
+            }
+            return StatusResult<Community>.Success(community);
+        }
     }
 }

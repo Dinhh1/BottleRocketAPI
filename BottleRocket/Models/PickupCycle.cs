@@ -16,11 +16,13 @@ namespace BottleRocket.Models
         public int Id { get; set; }
         public Decimal? AluminumWeight { get; set; }
         public Decimal? GlassWeight { get; set; }
-        public Decimal? StandardPlastic { get; set; }
-        public Decimal? MiscPlastic { get; set; }
+        public Decimal? StandardPlasticWeight { get; set; }
+        public Decimal? MiscPlasticWeight { get; set; }
+        public DateTime PickupDate { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime LastUpdated { get; set; }
         public Decimal TotalBags { get; set; }
+        public string Notes { get; set; }
         public int CommunityId { get; set; }
 
     }

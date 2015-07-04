@@ -368,5 +368,72 @@ namespace BottleRocket.BusinessLogic
         //}
 
         #endregion
+
+        #region Pickup Cycles
+
+        public static async Task<StatusResult<PickupCycle>> CreatePickupCycleAsync(PickupCycleBindingModel model)
+        {
+            var communityId = await ValidateCommunity(model.CommunityName);
+            if (communityId == -1)
+            {
+                return StatusResult<PickupCycle>.Error("There was an error Finding or Adding the community");
+            }
+            var pickupCycle = new PickupCycle()
+            {
+                Notes = model.Notes,
+                GlassWeight = model.GlassWeight,
+                AluminumWeight = model.AluminumWeight,
+                StandardPlasticWeight = model.StandardPlastic,
+                MiscPlasticWeight = model.MiscPlastic,
+                PickupDate = model.PickupDate,
+                CommunityId = communityId,
+                TotalBags = model.TotalBags
+            };
+            return await InsertPickupCycleAsync(pickupCycle);
+        }
+
+        private static async Task<int> ValidateCommunity(string cname)
+        {
+            int communityId = -1;
+            // get the community id
+            var communityResult = await BRUserManager.GetCommunityAsync(cname);
+            if (communityResult.Code == StatusCode.OK)
+            {
+                communityId = communityResult.Result.Id;
+            }
+            else
+            {
+                // the community doesn't exist, add it to the db
+                var db = BottleRocketDbContext.Create();
+                var community = new Community()
+                {
+                    Name = cname,
+                    DateCreated = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow
+                };
+                db.Communities.Add(community);
+                await db.SaveChangesAsync();
+                // According to stackoverflow id will be automatically updated when we call save changes
+                communityId = community.Id;
+            }
+            return communityId;
+        }
+
+        private static async Task<StatusResult<PickupCycle>> InsertPickupCycleAsync(PickupCycle cycle)
+        {
+            try
+            {
+                var db = BottleRocketDbContext.Create();
+                db.PickupCycles.Add(cycle);
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<PickupCycle>.Error(ex.Message);
+            }
+            return StatusResult<PickupCycle>.Success(cycle);
+        }
+
+        #endregion 
     }
 }
