@@ -14,10 +14,10 @@ namespace BottleRocket.Models
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Decimal? AluminumWeight { get; set; }
-        public Decimal? GlassWeight { get; set; }
-        public Decimal? StandardPlasticWeight { get; set; }
-        public Decimal? MiscPlasticWeight { get; set; }
+        public Decimal AluminumWeight { get; set; }
+        public Decimal GlassWeight { get; set; }
+        public Decimal StandardPlasticWeight { get; set; }
+        public Decimal MiscPlasticWeight { get; set; }
         public DateTime PickupDate { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime LastUpdated { get; set; }

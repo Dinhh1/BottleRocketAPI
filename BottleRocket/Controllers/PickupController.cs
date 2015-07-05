@@ -15,10 +15,26 @@ using BottleRocket.BusinessLogic;
 namespace BottleRocket.Controllers
 {
     //[Authorize]
-    public class SchedulePickupController : ApiController
+   [RoutePrefix("api/Pickup")]
+    public class PickupController : ApiController
     {
 
-        // POST: api/SchedulePickup
+        [Route("Cycle")]
+
+       // POST: api/Pickup/Cycle
+        public async Task<IHttpActionResult> CreatePickupCycle(PickupCycleBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Ok<StatusResult<PickupCycle>>(StatusResult<PickupCycle>.Error("Model is Invalid"));
+            }
+            var response = await PickupManager.CreatePickupCycleAsync(model);
+            return Ok(response);
+        }
+
+
+        [Route("Schedule")]
+        // POST: api/Pickup/Schedule
         public async Task<IHttpActionResult> SchedulePickup(SchedulePickupBindingModel model)
         {
             if (!ModelState.IsValid)

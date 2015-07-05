@@ -35,6 +35,29 @@ namespace BottleRocket.Models
         }
 
         /// <summary>
+        /// Creates a Error StatusResult object
+        /// </summary>
+        /// <param name="obj">The result object</param>
+        /// <returns>StatusResult</returns>
+        public static StatusResult<T> Error(T obj)
+        {
+            return Error(null, obj);
+        }
+
+        /// <summary>
+        /// Creates a Error StatusResult object
+        /// </summary>
+        /// <param name="msg">The success msg</param>
+        /// <param name="obj">The result object</param>
+        /// <returns>StatusResult</returns>
+        public static StatusResult<T> Error(string msg, T obj)
+        {
+            var er = Create(StatusCode.Error, String.IsNullOrEmpty(msg) ? "An Error has occured" : msg);
+            er.Result = obj;
+            return er;
+        }
+
+        /// <summary>
         /// Creates an Error StatusResult object with the default text
         /// </summary>
         /// <param name="msg">The error msg</param>

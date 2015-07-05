@@ -88,19 +88,21 @@ ALTER TABLE Communities ADD
 CONSTRAINT PK_CommunityId PRIMARY KEY CLUSTERED (Id ASC)
 GO
 
--- Pickup Cycles
+-- pickup cycles
 
 CREATE TABLE PickupCycles
 (
 	Id int IDENTITY(1,1) NOT NULL,
 	AluminumWeight Decimal NULL DEFAULT 0,
 	GlassWeight DECIMAL NULL DEFAULT 0,
-	StandardPlastic DECIMAL NULL DEFAULT 0,
-	MiscPlastic DECIMAL NULL DEFAULT 0,
+	StandardPlasticWeight DECIMAL NULL DEFAULT 0,
+	MiscPlasticWeight DECIMAL NULL DEFAULT 0,
 	TotalBags DECIMAL NULL DEFAULT 0,
 	CommunityId int NULL,
 	DateCreated Datetime Not NULL DEFAULT GETUTCDATE(),
 	LastUpdated DateTime NOT NULL DEFAULT GETUTCDATE(),
+	Notes nvarchar(max) NULL,
+	PickupDate DateTime NOT NULL DEFAULT GETUTCDATE()
 )
 
 
@@ -179,4 +181,3 @@ CONSTRAINT FK_Metrics_UserId
 	FOREIGN KEY (UserId)
 	REFERENCES AspNetUsers (Id)
 GO
-

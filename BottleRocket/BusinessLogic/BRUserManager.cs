@@ -147,24 +147,17 @@ namespace BottleRocket.BusinessLogic
             return StatusResult<Community>.Success(community);
         }
 
-        private static bool DoesCommunityExist(string cname)
-        {
-            var result = GetCommunity(cname);
-            return result.Code == StatusCode.OK ? true : false;
-        }
-
-        public static async Task<bool> DoesCommunityExistAsync(string cname)
-        {
-            var result = await GetCommunityAsync(cname);
-            return result.Code == StatusCode.OK ? true : false;
-        }
         public static StatusResult<Community> CreateCommunity(string cname)
         {
-            // check if user exist
-            if (DoesCommunityExist(cname))
+            // check if community exist before adding
+            var comCheck = GetCommunity(cname);
+            if (comCheck.Code == StatusCode.OK && comCheck.Result != null)
             {
-                return StatusResult<Community>.Error("Community already exist");
+                // if community is found, return it with an error
+                return StatusResult<Community>.Error("Community already exist", comCheck.Result);
             }
+
+            // beyond this point implies a new community, so insert a new one
             Community community = new Community()
             {
                 Name = cname,
@@ -176,10 +169,15 @@ namespace BottleRocket.BusinessLogic
 
         public static async Task<StatusResult<Community>> CreateCommunityAsync(string cname)
         {
-            if (await DoesCommunityExistAsync(cname))
+            // check if community exist before adding
+            var comCheck = await GetCommunityAsync(cname);
+            if (comCheck.Code == StatusCode.OK && comCheck.Result != null)
             {
-                return StatusResult<Community>.Error("Community already exist");
+                // if community is found, return it with an error
+                return StatusResult<Community>.Error("Community already exist", comCheck.Result);
             }
+
+            // beyond this point implies a new community, so insert a new one
             Community community = new Community()
             {
                 Name = cname,

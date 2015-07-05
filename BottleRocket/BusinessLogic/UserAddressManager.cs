@@ -43,7 +43,7 @@ namespace BottleRocket.BusinessLogic
             {
                 return StatusResult<UserAddress>.Error(ex.Message);
             }
-            return StatusResult<UserAddress>.Success();
+            return StatusResult<UserAddress>.Success(a);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace BottleRocket.BusinessLogic
             {
                 return StatusResult<UserAddress>.Error(ex.Message);
             }
-            return StatusResult<UserAddress>.Success();
+            return StatusResult<UserAddress>.Success(a);
         }
 
         /// <summary>
@@ -105,7 +105,6 @@ namespace BottleRocket.BusinessLogic
                 return StatusResult<UserAddress>.Error("No Results found");
             }
             return StatusResult<UserAddress>.Success(query);
-       
         }
 
         /// <summary>
