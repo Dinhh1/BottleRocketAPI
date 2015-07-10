@@ -123,11 +123,6 @@ namespace BottleRocket.Models
         public string UserName { get; set; }
     }
 
-    public class SchedulePickupBindingModel
-    {
-        [Required]
-        [Display(Name = "UserId")]
-        public string UserId { get; set; }
-    }
+
 
 }

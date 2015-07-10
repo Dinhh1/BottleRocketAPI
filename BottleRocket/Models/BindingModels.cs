@@ -22,4 +22,40 @@ namespace BottleRocket.Models
         [Display(Name = "Community Name")]
         public string CommunityName { get; set; }
     }
+
+    public class SchedulePickupBindingModel
+    {
+        [Required]
+        [Display(Name = "UserId")]
+        public string UserId { get; set; }
+    }
+
+    public class PickupReceiptBindingModel
+    {
+        [Required]
+        [Display(Name = "User's Id")]
+        public string UserId {get;set;}
+
+        [Required]
+        public Decimal TotalAmount { get; set; }
+
+        [Required]
+        [Display(Name = "Pickup Cycle's Id")]
+        public int PickupCycleId { get; set; }
+
+        [Required]
+        [Display(Name = "Number of bags")]
+        public Decimal BagCount { get; set; }
+
+    }
+
+    public class PickupReceiptResultBindingModel
+    {
+        public int MetricId { get; set; }
+        public int ReceiptId { get; set; }
+        public string UserId { get; set; }
+        public Decimal BagCount { get; set; }
+        public Decimal TotalAmount { get; set; }
+        public int PickupCycleId { get; set; }
+    }
 }

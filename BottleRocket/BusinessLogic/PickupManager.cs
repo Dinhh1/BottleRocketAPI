@@ -26,7 +26,7 @@ namespace BottleRocket.BusinessLogic
                 var db = BottleRocketDbContext.Create();
                 query = (from p in db.ScheduledPickups
                          where p.UserId == userId
-                         select p).ToList();
+                         select p).AsNoTracking().ToList();
 
                 if (query == null || !query.Any())
                 {
@@ -53,7 +53,7 @@ namespace BottleRocket.BusinessLogic
                 var db = BottleRocketDbContext.Create();
                 query = await (from p in db.ScheduledPickups
                                where p.UserId == userId
-                               select p).ToListAsync();
+                               select p).AsNoTracking().ToListAsync();
 
                 if (query == null || !query.Any())
                 {
@@ -80,7 +80,7 @@ namespace BottleRocket.BusinessLogic
                 var db = BottleRocketDbContext.Create();
                 var query = await (from p in db.ScheduledPickups
                                    where p.UserId == userId && p.IsPickedUp == false
-                                   select p).SingleOrDefaultAsync();
+                                   select p).AsNoTracking().SingleOrDefaultAsync();
                 if (query == null)
                 {
                     return StatusResult<ScheduledPickup>.Error("User has no pending pickup");
@@ -107,7 +107,7 @@ namespace BottleRocket.BusinessLogic
                 var db = BottleRocketDbContext.Create();
                 var query = (from p in db.ScheduledPickups
                              where p.UserId == userId && p.IsPickedUp == false
-                             select p).SingleOrDefault();
+                             select p).AsNoTracking().SingleOrDefault();
                 if (query == null)
                 {
                     return StatusResult<ScheduledPickup>.Error("User has no pending pickup");
@@ -326,6 +326,61 @@ namespace BottleRocket.BusinessLogic
         #endregion
 
         #region PickupReceipts  Methods
+        public static async Task<StatusResult<PickupReceiptResultBindingModel>> CreatePickupReceiptAsync(PickupReceiptBindingModel model)
+        {
+            return await CreatePickupReceiptStoredProcedureHelper(model);
+        }
+
+        private static async Task<StatusResult<PickupReceiptResultBindingModel>> CreatePickupReceiptStoredProcedureHelper(PickupReceiptBindingModel model)
+        {
+            PickupReceiptResultBindingModel result = null;
+            try
+            {
+                // using a stored procedure to handle 
+                var db = BottleRocketDbContext.Create();
+                string sql = "exec SpCreatePickupReceipts {0}, {1}, {2}, {3}";
+                var query = await db.Database.SqlQuery<PickupReceiptResultBindingModel>(sql, model.UserId, model.PickupCycleId,
+                    model.TotalAmount, model.BagCount).FirstOrDefaultAsync();
+                if (query == null)
+                {
+                    return StatusResult<PickupReceiptResultBindingModel>.Error("Query result is null");
+                }
+                result = query;
+            }
+            catch (Exception ex)
+            {
+                return StatusResult<PickupReceiptResultBindingModel>.Error(ex.Message, result);
+            }
+            return StatusResult<PickupReceiptResultBindingModel>.Success(result);
+        }
+
+        //public static async Task<StatusResult<PickupReceipt>> CreatePickupReceipt(PickupReceiptBindingModel model)
+        //{
+        //    //TODO:: Need to verify this logic. 1. When a pickup receipt is created for the user,
+        //    // we should also automatically flag the pickup as done and flag it is true
+
+        //    // first get the schedule pickup id, since user can only have 1 pending pickup at a time
+        //    var pendingPickupResult = await PickupManager.GetPendingPickupAsync(model.UserId);
+        //    if (pendingPickupResult.Code != StatusCode.OK && pendingPickupResult.Result != null)
+        //    {
+        //        // the user doesn't have a pending pickup, so we can't create a receipt
+        //        return StatusResult<PickupReceipt>.Error("User does not have a pending up pickup");
+        //    }
+
+        //    var scheduledPickup = pendingPickupResult.Result;
+        //    scheduledPickup.IsPickedUp = true;
+
+        //    // create pickupreceipt model
+        //    var pickupReceipt = new PickupReceipt()
+        //    {
+        //        UserId = model.UserId,
+        //        ScheduledPickupId = pendingPickupResult.Result.Id,
+
+        //    }
+
+        //NOTE:: NOT DONE
+        //}
+
 
         ///// <summary>
         ///// Insert a pickup receipt asyncronously

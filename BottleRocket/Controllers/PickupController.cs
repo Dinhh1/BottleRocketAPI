@@ -46,5 +46,17 @@ namespace BottleRocket.Controllers
             return Ok(response);
         }
 
+        [Route("Receipt")]
+        [HttpPost]
+        public async Task<IHttpActionResult> CreatePickupReceipt(PickupReceiptBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Ok(StatusResult<PickupReceiptResultBindingModel>.Error("Model is Invalid"));
+            }
+            var response = await PickupManager.CreatePickupReceiptAsync(model);
+            return Ok(response);
+        }
+       
     }
 }

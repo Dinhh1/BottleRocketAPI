@@ -93,11 +93,11 @@ GO
 CREATE TABLE PickupCycles
 (
 	Id int IDENTITY(1,1) NOT NULL,
-	AluminumWeight Decimal NULL DEFAULT 0,
-	GlassWeight DECIMAL NULL DEFAULT 0,
-	StandardPlasticWeight DECIMAL NULL DEFAULT 0,
-	MiscPlasticWeight DECIMAL NULL DEFAULT 0,
-	TotalBags DECIMAL NULL DEFAULT 0,
+	AluminumWeight DECIMAL(6,3) NULL DEFAULT 0,
+	GlassWeight DECIMAL(6,3) NULL DEFAULT 0,
+	StandardPlasticWeight DECIMAL(6,3) NULL DEFAULT 0,
+	MiscPlasticWeight DECIMAL(6,3) NULL DEFAULT 0,
+	TotalBags DECIMAL(6,3) NULL DEFAULT 0,
 	CommunityId int NULL,
 	DateCreated Datetime Not NULL DEFAULT GETUTCDATE(),
 	LastUpdated DateTime NOT NULL DEFAULT GETUTCDATE(),
@@ -124,7 +124,7 @@ CREATE TABLE PickupReceipts
 	Id int IDENTITY(1,1) NOT NULL,
 	UserId nvarchar(128) NOT NULL,
 	ScheduledPickupId int NOT NULL,
-	TotalAmount Decimal NULL Default 0,
+	TotalAmount DECIMAL(18,4) NULL Default 0,
 	PickupCycleId int NOT NULL,
 	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
 	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
@@ -153,6 +153,11 @@ CONSTRAINT FK_Receipts_PickupCycleId
 	REFERENCES PickupCycles(Id)
 GO
 
+ALTER TABLE PickupReceipts ADD
+CONSTRAINT
+	PR_UniqueCycle UNIQUE (PickupCycleId)
+GO
+
 ---- UserMetric
 
 CREATE TABLE UserMetrics
@@ -160,7 +165,7 @@ CREATE TABLE UserMetrics
 	Id int IDENTITY(1,1) NOT NULL,
 	UserId nvarchar(128) NOT NULL,
 	ReceiptId int NOT NULL,
-	BagCount Decimal NULL DEFAULT 0,
+	BagCount DECIMAL(6,3) NULL DEFAULT 0,
 	[DateCreated] datetime NOT NULL DEFAULT GETUTCDATE(),
 	[LastUpdated] datetime NOT NULL DEFAULT GETUTCDATE()
 )

@@ -215,6 +215,7 @@
     <Compile Include="Models\Global.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PickupCycle.cs" />
+    <Compile Include="Models\PickupReceipt.cs" />
     <Compile Include="Models\ScheduledPickup.cs" />
     <Compile Include="Models\StatusResult.cs" />
     <Compile Include="Models\UserAddress.cs" />
